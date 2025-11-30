@@ -11,35 +11,32 @@ permissions:
 
 jobs:
   deploy-iac:
-    runs-on: [self-hosted, terraform]   # ✅ FIXED
+    runs-on: [self-hosted, terraform]
 
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
-
+      # ------------------------------
+      # AWS authentication (OIDC)
+      # ------------------------------
       - name: Configure AWS Credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ secrets.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
+          role-session-name: github-terraform-session
 
+      # ------------------------------
+      # Terraform Setup
+      # ------------------------------
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: latest
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Install tfsec for security scanning
         run: |
@@ -47,7 +44,7 @@ jobs:
           chmod +x tfsec
           ./tfsec --version
 
-      - name: Run Terraform Init
+      - name: Terraform Init
         run: terraform init
 
       - name: Terraform Format
@@ -65,20 +62,34 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
-      - name: 'install kubectl'
+      # ------------------------------
+      # Install kubectl AFTER cluster is ready
+      # ------------------------------
+      - name: Install kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
 
-      - name: 'authenticate to EKS Cluster'
-        run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region us-east-1
+      # ------------------------------
+      # Authenticate kubectl to EKS
+      # MUST RUN AFTER TERRAFORM APPLY
+      # ------------------------------
+      - name: Authenticate kubectl with EKS
+        run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
-      - name: 'Deploying the ClusterIssuer to EKS'
+      # ------------------------------
+      # Deploy ClusterIssuer AFTER cert-manager installation
+      # ------------------------------
+      - name: Deploy ClusterIssuer
         run: kubectl apply -f ClusterIssuer.yaml
 
-      - name: 'Deploying argocd ingress rule to EKS'
+      # ------------------------------
+      # Deploy ArgoCD ingress
+      # ------------------------------
+      - name: Deploy ArgoCD Ingress
         run: kubectl apply -f ingress-argocd.yaml -n argocd
+
 
       #- name: Terraform Destroy
       #  run: terraform destroy -auto-approve
