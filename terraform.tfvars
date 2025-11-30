@@ -15,3 +15,4 @@ domain-name = "kennedynwachukwu.online"   # 🔥 Updated
 cluster_name = "eks-cluster"
 repository_name = "eks-repository"
 email = "kenedynwachukwu@gmail.com"       # 🔥 Updated
+region = "us-east-1"

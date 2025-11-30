@@ -175,3 +175,8 @@ variable "email" {
   default     = "kenedynwachukwu@gmail.com"   # 🔥 Updated — yours
   description = "Notification email"
 }
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+}
