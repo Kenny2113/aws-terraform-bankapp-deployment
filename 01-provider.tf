@@ -1,6 +1,6 @@
-# provider "aws" {
-#   region = "us-east-1"
-# }
+provider "aws" {
+  region = "us-east-1"
+}
 
 
 terraform {
@@ -23,17 +23,3 @@ provider "namecheap" {
   client_ip = var.namecheap_client_ip
   use_sandbox = false
 }
-
-terraform {
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.11.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.20.0"
-    }
-  }
-}
-
