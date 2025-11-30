@@ -46,8 +46,8 @@ jobs:
         run: terraform validate
       - name: tfsec Security Scan
         run: tfsec . || true
-      - name: Terraform Plan
-        run: terraform plan 
+      # - name: Terraform Plan
+      #   run: terraform plan 
       # - name: Terraform Apply
       #   run: terraform apply -auto-approve
       # - name: Export EKS cluster name from Terraform
@@ -85,4 +85,3 @@ jobs:
       #   run: kubectl apply -f ingress-argocd.yaml -n argocd
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
-        
