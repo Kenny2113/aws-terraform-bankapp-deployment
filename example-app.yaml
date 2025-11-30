@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:latest     # ✅ Updated image (safe and universal)
+        image: kenedynwachukwu/edu:v1     # ✅ Updated image (safe and universal)
         ports:
         - containerPort: 80
 

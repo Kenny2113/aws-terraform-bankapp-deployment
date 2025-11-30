@@ -8,3 +8,10 @@ output "nginx_lb_ip" {
 output "nginx_ingress_load_balancer_hostname" {
   value = data.aws_lb.nginx_ingress.dns_name
 }
+output "cluster_name" {
+  value = aws_eks_cluster.eks.name
+}
+
+output "cluster_endpoint" {
+  value = aws_eks_cluster.eks.endpoint
+}
