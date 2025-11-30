@@ -11,10 +11,10 @@ spec:
   ingressClassName: external-nginx
   tls:
   - hosts:
-    - argocd.cloudwitches.online
-    secretName: argocd-cloudwitches-online
+    - argocd.kennedynwachukwu.online            # 🔥 Updated
+    secretName: argocd-kennedynwachukwu-online  # 🔥 Updated TLS secret
   rules:
-  - host: argocd.cloudwitches.online
+  - host: argocd.kennedynwachukwu.online        # 🔥 Updated
     http:
       paths:
       - path: /

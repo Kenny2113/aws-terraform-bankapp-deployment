@@ -23,6 +23,3 @@ provider "namecheap" {
   client_ip = var.namecheap_client_ip
   use_sandbox = false
 }
-provider "aws" {
-  region = "us-east-1"
-}
