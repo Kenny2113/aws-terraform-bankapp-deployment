@@ -23,12 +23,12 @@ jobs:
       # ------------------------------
       # AWS authentication (OIDC)
       # ------------------------------
-      - name: Configure AWS Credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
-          role-session-name: github-terraform-session
+      # - name: Configure AWS Credentials using OIDC
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-region: ${{ secrets.AWS_REGION }}
+      #     role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
+      #     role-session-name: github-terraform-session
 
       # ------------------------------
       # Terraform Setup
