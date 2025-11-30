@@ -119,7 +119,7 @@ variable "namecheap_username" {
 
 variable "namecheap_client_ip" {
   type        = string
-  default     = "YOUR_PUBLIC_IP_HERE"   # Enter real IP later
+  default     = "98.89.22.71"   # Enter real IP later
 }
 
 # ==============================
